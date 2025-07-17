@@ -467,7 +467,7 @@ function renderStyles() {
         styleEl.className = `style-option ${style === selectedStyle ? 'active' : ''}`;
         styleEl.dataset.style = style;
         styleEl.innerHTML = `
-            <span class="clothing-emoji">👗</span>
+            <span class="clothing-emoji">🧥</span>
             <div>${style.charAt(0).toUpperCase() + style.slice(1)}</div>
             ${!defaultStyles.includes(style) ? `<button class="delete-btn" onclick="deleteStyle('${style}')">×</button>` : ''}
         `;
