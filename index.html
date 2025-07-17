@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherFit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="Logo.png" alt="Logo" width="100" height="100" loading="lazy" title="Paysage montagneux" style="border: none; ">
+            <h2>WeatherFit</h2>
+        </div>
+
+        <div class="main-grid">
+            <div class="sidebar">
+                <div class="section-title3">🌤️ Météo & Style</div>
+                <div class="form-group location-input">
+                    <input type="text" id="location" class="form-control" placeholder="Entrez votre ville">
+                    <button class="btn btn-primary" onclick="getWeather()">🔄</button>
+                </div>
+
+                <div class="weather-info" id="weatherInfo">
+                    <div class="weather-temp">--°C</div>
+                    <div class="weather-desc">Chargement...</div>
+                </div>
+
+                <div class="section-title">Style désiré :</div>
+                <div class="style-selector" id="styleSelector">
+                    <div class="style-option active" data-style="casual">
+                        <span class="clothing-emoji">👕</span>
+                        <div>Casual</div>
+                    </div>
+                    <div class="style-option" data-style="streetwear">
+                        <span class="clothing-emoji">🧢</span>
+                        <div>Street</div>
+                    </div>
+                    <div class="style-option" data-style="classe">
+                        <span class="clothing-emoji">👔</span>
+                        <div>Classe</div>
+                    </div>
+                    <div class="style-option" data-style="sport">
+                        <span class="clothing-emoji">👟</span>
+                        <div>Sport</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="newStyle">Nouveau style :</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="newStyle" class="form-control" placeholder="Nom du style">
+                        <button class="btn btn-primary" onclick="addNewStyle()">Ajouter</button>
+                    </div>
+                </div>
+
+                <div class="section-title">Gérer les Styles</div>
+                <div class="style-manage" id="styleManage"></div>
+
+                <button class="btn btn-primary" onclick="generateOutfit()">✨ Générer Outfit</button>
+
+                <div class="section-title">💾 Données</div>
+                <div class="data-controls">
+                    <button class="btn btn-secondary" onclick="saveToFile()">📁 Sauvegarder</button>
+                    <button class="btn btn-secondary" onclick="loadFromFile()">📂 Charger</button>
+                    <button class="btn btn-secondary" onclick="shareURL()">🔗 Partager</button>
+                    <input type="file" id="fileInput" style="display: none;" accept=".json" onchange="handleFileLoad(event)">
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="section-title">👕 Garde-robe</div>
+                <div class="form-group">
+                    <label for="newItemName">Ajouter un vêtement :</label>
+                    <input type="text" id="newItemName" class="form-control2" placeholder="Nom du vêtement">
+                    <input type="text" id="newItemEmoji" class="form-control2" placeholder="Emoji (optionnel)">
+                    <input type="file" id="newItemPhoto" class="form-control2" accept="image/*">
+                    <select id="newItemCategory" class="form-control2">
+                        <option value="haut">Haut</option>
+                        <option value="bas">Bas</option>
+                        <option value="chaussures">Chaussures</option>
+                        <option value="accessoire">Accessoire</option>
+                        <option value="veste">Veste</option>
+                    </select>
+                    <select id="newItemSeason" class="form-control2">
+                        <option value="toute">Toute saison</option>
+                        <option value="ete">Été</option>
+                        <option value="hiver">Hiver</option>
+                        <option value="mi-saison">Mi-saison</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="addClothingItem()">Ajouter</button>
+                </div>
+
+                <div class="section-title">Gérer les Vêtements</div>
+                <div class="saved-outfit">
+                    <div class="section-title2">Haut</div>
+                    <div class="clothes-grid" id="hautGrid">    
+                    </div>
+                </div>
+                <div class="saved-outfit">
+                    <div class="section-title2">Bas</div>
+                    <div class="clothes-grid" id="basGrid">
+                    </div>
+                </div>
+                <div class="saved-outfit">
+                    <div class="section-title2">Chaussures</div>
+                    <div class="clothes-grid" id="chaussuresGrid">
+                    </div>
+                </div>
+                <div class="saved-outfit">
+                    <div class="section-title2">Accessoire</div>
+                    <div class="clothes-grid" id="accessoireGrid">
+                    </div>
+                </div>
+                <div class="saved-outfit">
+                    <div class="section-title2">Veste</div>
+                    <div class="clothes-grid" id="vesteGrid">
+                    </div>
+                </div>
+
+                <div class="section-title">✨ Composition d'Outfit</div>
+                <div class="outfit-canvas" id="outfitCanvas">
+                    <p style="text-align: center; opacity: 0.7; margin-top: 50px;">
+                        Glissez-déposez vos vêtements ici pour créer un outfit
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="saveOutfit()">💾 Sauvegarder Outfit</button>
+                    <button class="btn btn-secondary" onclick="clearOutfit()">🗑️ Vider l'outfit</button>
+                </div>
+
+                <div class="section-title">📋 Gérer les Outfits</div>
+                <div class="outfit-carousel" id="manageOutfits"></div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Génération de votre outfit parfait...</p>
+        </div>
+        <div class="result-display" id="resultDisplay">
+            <div class="section-title">🎯 Votre Outfit Parfait</div>
+            <div class="result-grid">
+                <div class="outfit-preview">
+                    <div class="outfit-visual" id="outfitVisual">
+                        <img id="outfitPhoto" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px; display: none;">
+                        <div id="outfitEmojis">👕👖👟</div>
+                    </div>
+                    <div class="outfit-description" id="outfitDescription">
+                        Outfit casual parfait pour une journée ensoleillée à 22°C
+                    </div>
+                </div>
+                <div class="outfit-carousel" id="outfitDetails">
+                    <div class="section-title">Détails</div>
+                </div>
+            </div>
+            <div class="section-title">📚 Outfits Sauvegardés</div>
+            <div class="outfit-carousel" id="savedOutfits"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
