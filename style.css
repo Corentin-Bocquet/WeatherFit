@@ -87,6 +87,15 @@ body {
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
+.section-title-compo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 10%;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -207,6 +216,12 @@ body {
 }
 
 .clothing-emoji {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.clothing-emoji1 {
     font-size: 2rem;
     margin-bottom: 8px;
     display: block;
@@ -518,3 +533,71 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.weather-extra {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .weather-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 20px 15px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    transition: all 0.35s ease;
+    cursor: default;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Effet visuel au hover */
+  .weather-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255,255,255,0.25);
+  }
+  
+  /* Effet glow subtil */
+  .weather-card:hover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, rgba(255,255,255,0.15), transparent 70%);
+    pointer-events: none;
+  }
+  
+  /* Icône météo en GRAND */
+  .weather-icon {
+    font-size: 2.8rem;
+    margin-bottom: 8px;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Effet rebond icône au hover */
+  .weather-card:hover .weather-icon {
+    transform: scale(1.2) rotate(5deg);
+  }
+  
+  /* Label en gras */
+  .weather-label {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  
+  /* Valeur météo */
+  .weather-value {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 500;
+  }
+  

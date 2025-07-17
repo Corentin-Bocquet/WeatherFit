@@ -400,7 +400,7 @@ function renderSavedOutfits() {
 
 function renderManageOutfits() {
     const manageSection = document.getElementById('manageOutfits');
-    manageSection.innerHTML = '<div class="section-title">Gérer les Outfits</div>';
+    manageSection.innerHTML = '';
     
     savedOutfits.forEach(outfit => {
         const outfitEl = document.createElement('div');
@@ -467,7 +467,7 @@ function renderStyles() {
         styleEl.className = `style-option ${style === selectedStyle ? 'active' : ''}`;
         styleEl.dataset.style = style;
         styleEl.innerHTML = `
-            <span class="clothing-emoji">🧥</span>
+            <span class="clothing-emoji1">🧥</span>
             <div>${style.charAt(0).toUpperCase() + style.slice(1)}</div>
             ${!defaultStyles.includes(style) ? `<button class="delete-btn" onclick="deleteStyle('${style}')">×</button>` : ''}
         `;
@@ -483,51 +483,117 @@ function renderStyles() {
     });
 }
 
-async function getWeather() {
-    const location = document.getElementById('location').value || 'Paris';
-    const weatherInfo = document.getElementById('weatherInfo');
-    
+const API_KEY = "1f2dd5d20f454a46339cb87baf2781ab";
+
+
+function getBackgroundByCondition(condition) {
+    condition = condition.toLowerCase();
+    if (condition.includes("clear")) return "linear-gradient(135deg, #4facfe, #00f2fe)"; // ciel clair
+    if (condition.includes("cloud")) return "linear-gradient(135deg, #757f9a, #d7dde8)"; // gris
+    if (condition.includes("rain") || condition.includes("drizzle")) return "linear-gradient(135deg, #667db6, #0082c8, #0082c8, #667db6)"; // pluie
+    if (condition.includes("snow")) return "linear-gradient(135deg, #83a4d4, #b6fbff)"; // neige
+    if (condition.includes("thunderstorm")) return "linear-gradient(135deg, #232526, #414345)"; // orage
+    if (condition.includes("fog") || condition.includes("mist")) return "linear-gradient(135deg, #bdc3c7, #2c3e50)"; // brouillard
+    return "linear-gradient(135deg, #4facfe, #00f2fe)"; // par défaut
+  }
+
+  function getAdvice(uv, wind, weatherMain) {
+    let advice = [];
+    if (weatherMain.includes("rain")) advice.push("🌂 Prends un parapluie");
+    if (weatherMain.includes("snow")) advice.push("🧤 Prévois des gants");
+    if (uv > 6) advice.push("🕶️ Crème solaire & lunettes");
+    if (wind > 50) advice.push("⚠️ Vent fort, attention");
+    if (weatherMain.includes("thunderstorm")) advice.push("⛈️ Risque d’orage");
+    if (advice.length === 0) advice.push("👌 Rien de spécial");
+    return advice.join(", ");
+  }
+
+  async function getWeather() {
+    const city = document.getElementById("location").value || "Paris";
+    const weatherContainer = document.getElementById("weatherContainer");
+    const weatherInfo = document.getElementById("weatherInfo");
+    const weatherExtra = document.getElementById("weatherExtra");
+  
+    const API_KEY = "1f2dd5d20f454a46339cb87baf2781ab";
+    const UV_API_KEY = "openuv-jt04rmd7zb74i-io";
+  
     try {
-        // Utilisation de l'API OpenWeatherMap gratuite
-        const API_KEY = 'demo'; // En mode démo, utiliser une API réelle en production
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${API_KEY}&units=metric&lang=fr`);
-        
-        if (!response.ok) {
-            currentWeather = {
-                temp: 26, // Summer temperature for testing
-                description: 'Ensoleillé',
-                icon: '☀️',
-                condition: 'clear'
-            };
-        } else {
-            const data = await response.json();
-            currentWeather = {
-                temp: Math.round(data.main.temp),
-                description: data.weather[0].description,
-                icon: getWeatherIcon(data.weather[0].icon),
-                condition: data.weather[0].main.toLowerCase()
-            };
+      console.log("🌍 Étape 1 : météo + coordonnées");
+  
+      // 1️⃣ OpenWeatherMap pour temp/vent/pluie + coords
+      const geoUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric&lang=fr`;
+      const geoRes = await fetch(geoUrl);
+      if (!geoRes.ok) throw new Error("Ville non trouvée");
+      const geo = await geoRes.json();
+  
+      const temp = Math.round(geo.main.temp);
+      const desc = geo.weather[0].description;
+      const icon = getWeatherIcon(geo.weather[0].icon);
+      const condition = geo.weather[0].main.toLowerCase();
+      const precip = geo.rain?.["1h"] ? `${geo.rain["1h"]} mm pluie`
+                    : geo.snow?.["1h"] ? `${geo.snow["1h"]} mm neige`
+                    : "aucune";
+      const windSpeed = Math.round(geo.wind.speed * 3.6);
+  
+      const { lat, lon } = geo.coord;
+      console.log("Coordonnées récupérées :", lat, lon);
+  
+      // 2️⃣ OpenUV.io pour indice UV actuel
+      console.log("☀️ Étape 2 : appel OpenUV.io");
+      const uvRes = await fetch(`https://api.openuv.io/api/v1/uv?lat=${lat}&lng=${lon}`, {
+        headers: {
+          "x-access-token": UV_API_KEY
         }
-        
-        weatherInfo.innerHTML = `
-            <div class="weather-temp">${currentWeather.temp}°C ${currentWeather.icon}</div>
-            <div class="weather-desc">${currentWeather.description}</div>
-        `;
-        
+      });
+  
+      if (!uvRes.ok) throw new Error("Erreur OpenUV.io (clé invalide ou limite atteinte)");
+      const uvData = await uvRes.json();
+      console.log("Réponse OpenUV.io :", uvData);
+  
+      const uv = Math.round(uvData.result.uv); // ✅ UV réel via OpenUV.io
+  
+      // ✅ Mise à jour UI
+      /**weatherContainer.style.background = getBackgroundByCondition(condition);**/
+  
+      weatherInfo.innerHTML = `
+        <div class="weather-temp">${temp}°C ${icon}</div>
+        <div class="weather-desc">${desc}</div>
+      `;
+  
+      weatherExtra.innerHTML = `
+        <div class="weather-card">
+          <div class="weather-icon">💧</div>
+          <div class="weather-label"><strong>Précipitations</strong></div>
+          <div class="weather-value">${precip}</div>
+        </div>
+        <div class="weather-card">
+          <div class="weather-icon">💨</div>
+          <div class="weather-label"><strong>Vent</strong></div>
+          <div class="weather-value">${windSpeed} km/h</div>
+        </div>
+        <div class="weather-card">
+          <div class="weather-icon">☀️</div>
+          <div class="weather-label"><strong>UV</strong></div>
+          <div class="weather-value">${uv}/10</div>
+        </div>
+        <div class="weather-card">
+          <div class="weather-icon">⚠️</div>
+          <div class="weather-label"><strong>Conseil</strong></div>
+          <div class="weather-value">${getAdvice(uv, windSpeed, condition)}</div>
+        </div>
+      `;
+  
     } catch (error) {
-        console.error('Erreur météo:', error);
-        currentWeather = {
-            temp: 26, // Summer temperature for testing
-            description: 'Ensoleillé',
-            icon: '☀️',
-            condition: 'clear'
-        };
-        weatherInfo.innerHTML = `
-            <div class="weather-temp">26°C ☀️</div>
-            <div class="weather-desc">Ensoleillé</div>
-        `;
+      console.error("❌ Erreur météo :", error);
+      weatherInfo.innerHTML = `<div class="weather-temp">Erreur</div><div class="weather-desc">${error.message}</div>`;
+      weatherExtra.innerHTML = `<div class="weather-card">Impossible de charger les infos</div>`;
     }
-}
+  }
+  
+
+
+  // Charger la météo de Paris au départ
+  window.addEventListener("load", getWeather);
 
 function getWeatherIcon(iconCode) {
     const iconMap = {

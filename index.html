@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeatherFit</title>
+    <title>OUTFIT</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -22,12 +22,40 @@
                     <button class="btn btn-primary" onclick="getWeather()">🔄</button>
                 </div>
 
-                <div class="weather-info" id="weatherInfo">
-                    <div class="weather-temp">--°C</div>
-                    <div class="weather-desc">Chargement...</div>
+                <div class="weather-container" id="weatherContainer">
+                    <div class="weather-info" id="weatherInfo">
+                      <div class="weather-temp">--°C</div>
+                      <div class="weather-desc">Chargement...</div>
+                    </div>
+                  
+                    <!-- ✅ Encadré infos rapides -->
+                    <div class="weather-extra" id="weatherExtra">
+                        <div class="weather-card">
+                          <div class="weather-icon">💧</div>
+                          <div class="weather-label"><strong>Précipitations</strong></div>
+                          <div class="weather-value">--</div>
+                        </div>
+                        <div class="weather-card">
+                          <div class="weather-icon">💨</div>
+                          <div class="weather-label"><strong>Vent</strong></div>
+                          <div class="weather-value">--</div>
+                        </div>
+                        <div class="weather-card">
+                          <div class="weather-icon">☀️</div>
+                          <div class="weather-label"><strong>UV</strong></div>
+                          <div class="weather-value">--</div>
+                        </div>
+                        <div class="weather-card">
+                          <div class="weather-icon">⚠️</div>
+                          <div class="weather-label"><strong>Conseil</strong></div>
+                          <div class="weather-value">--</div>
+                        </div>
+                      </div>
                 </div>
 
-                <div class="section-title">Style désiré :</div>
+                
+
+                <div class="section-title-compo">Style désiré :</div>
                 <div class="style-selector" id="styleSelector">
                     <div class="style-option active" data-style="casual">
                         <span class="clothing-emoji">👕</span>
@@ -70,6 +98,30 @@
             </div>
 
             <div class="main-content">
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Génération de votre outfit parfait...</p>
+                </div>
+                <div class="result-display" id="resultDisplay">
+                    <div class="section-title">🎯 Votre Outfit Parfait</div>
+                    <div class="result-grid">
+                        <div class="outfit-preview">
+                            <div class="outfit-visual" id="outfitVisual">
+                                <img id="outfitPhoto" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px; display: none;">
+                                <div id="outfitEmojis">👕👖👟</div>
+                            </div>
+                            <div class="outfit-description" id="outfitDescription">
+                                Outfit casual parfait pour une journée ensoleillée à 22°C
+                            </div>
+                        </div>
+                        <div class="outfit-carousel" id="outfitDetails">
+                            <div class="section-title">Détails</div>
+                        </div>
+                    </div>
+                    <div class="section-title">📚 Outfits Sauvegardés</div>
+                    <div class="outfit-carousel" id="savedOutfits"></div>
+                </div>
                 <div class="section-title">👕 Garde-robe</div>
                 <div class="form-group">
                     <label for="newItemName">Ajouter un vêtement :</label>
@@ -119,7 +171,7 @@
                     </div>
                 </div>
 
-                <div class="section-title">✨ Composition d'Outfit</div>
+                <div class="section-title-compo">✨ Composition d'Outfit</div>
                 <div class="outfit-canvas" id="outfitCanvas">
                     <p style="text-align: center; opacity: 0.7; margin-top: 50px;">
                         Glissez-déposez vos vêtements ici pour créer un outfit
@@ -136,29 +188,7 @@
             </div>
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Génération de votre outfit parfait...</p>
-        </div>
-        <div class="result-display" id="resultDisplay">
-            <div class="section-title">🎯 Votre Outfit Parfait</div>
-            <div class="result-grid">
-                <div class="outfit-preview">
-                    <div class="outfit-visual" id="outfitVisual">
-                        <img id="outfitPhoto" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px; display: none;">
-                        <div id="outfitEmojis">👕👖👟</div>
-                    </div>
-                    <div class="outfit-description" id="outfitDescription">
-                        Outfit casual parfait pour une journée ensoleillée à 22°C
-                    </div>
-                </div>
-                <div class="outfit-carousel" id="outfitDetails">
-                    <div class="section-title">Détails</div>
-                </div>
-            </div>
-            <div class="section-title">📚 Outfits Sauvegardés</div>
-            <div class="outfit-carousel" id="savedOutfits"></div>
-        </div>
+        
     </div>
     <script src="script.js"></script>
 </body>
