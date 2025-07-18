@@ -14,7 +14,7 @@ let clothingItems = [
 
 let savedOutfits = [];
 let currentOutfit = [];
-let currentWeather = null;
+let currentWeather = weatherInfo;
 let selectedStyle = "casual";
 let availableStyles = ["casual", "streetwear", "classe", "sport"];
 const defaultStyles = ["casual", "streetwear", "classe", "sport"];
@@ -377,7 +377,7 @@ function deleteOutfit(outfitId) {
 
 function renderSavedOutfits() {
     const carousel = document.getElementById('savedOutfits');
-    carousel.innerHTML = '<div class="section-title">Outfits Sauvegardés</div>';
+    carousel.innerHTML = '';
     
     savedOutfits.forEach(outfit => {
         const outfitEl = document.createElement('div');
@@ -758,8 +758,7 @@ function displayGeneratedOutfit(outfit, photo = "", name = "Outfit généré", s
         const seasonDesc = season || getSeasonFromTemp(currentWeather.temp);
 
         description.innerHTML = `
-            Outfit ${styleNames[selectedStyle] || selectedStyle} parfait pour ${weatherDesc} 
-            à ${currentWeather.temp}°C en saison ${seasonDesc}. Cette tenue combine confort et style 
+            Outfit ${styleNames[selectedStyle] || selectedStyle} parfait en ${seasonDesc}. Cette tenue combine confort et style 
             tout en étant adaptée aux conditions météorologiques actuelles.
         `;
 
